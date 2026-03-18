@@ -46,7 +46,7 @@ local SaveManager = {} do
 		},
 		Keybind = {
 			Save = function(idx, object)
-				return { type = "Keybind", idx = idx, mode = object.Mode, key = object.Value.Name }
+				return { type = "Keybind", idx = idx, mode = object.Mode, key = object.Value }
 			end,
 			Load = function(idx, data)
 				if SaveManager.Options[idx] then 
