@@ -46,7 +46,8 @@ local SaveManager = {} do
 		},
 		Keybind = {
 			Save = function(idx, object)
-				return { type = "Keybind", idx = idx, mode = object.Mode, key = object.Value.Name }
+				local keyVal = typeof(object.Value) == "EnumItem" and object.Value.Name or tostring(object.Value)
+				return { type = "Keybind", idx = idx, mode = object.Mode, key = keyVal }
 			end,
 			Load = function(idx, data)
 				if SaveManager.Options[idx] then 
@@ -93,7 +94,12 @@ local SaveManager = {} do
 			if not self.Parser[option.Type] then continue end
 			if self.Ignore[idx] then continue end
 
-			table.insert(data.objects, self.Parser[option.Type].Save(idx, option))
+			local success, result = pcall(function()
+				return self.Parser[option.Type].Save(idx, option)
+			end)
+			if success and result then
+				table.insert(data.objects, result)
+			end
 		end	
 
 		local success, encoded = pcall(httpService.JSONEncode, httpService, data)
